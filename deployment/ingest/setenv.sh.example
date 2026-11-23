@@ -1,0 +1,13 @@
+# /opt/tomcat9/bin/setenv.sh  (chmod 700, has the password)
+# catalina.sh reads this on start, so changes need a tomcat restart
+export RABBITMQ_HOST=172.31.9.154        # broker private IP
+export RABBITMQ_PASS='change-me'
+export CHANNEL_POOL_SIZE=128             # 64 was the first bottleneck, see test results
+
+# optional, defaults shown
+# export RABBITMQ_USER=skitrak
+# export CHANNEL_BORROW_TIMEOUT_MS=1000
+# export CONFIRM_TIMEOUT_MS=1000
+# export PERSISTENT_MESSAGES=true
+# export RESORT_COUNT=10
+# SERVER_ID defaults to the hostname, which is already unique per instance. dont hardcode it here or every clone gets the same id

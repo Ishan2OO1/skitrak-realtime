@@ -1,0 +1,34 @@
+services:
+  rabbitmq:
+    image: rabbitmq:4.4.0-management
+    hostname: skitrak-rabbit
+    environment:
+      RABBITMQ_DEFAULT_USER: skitrak
+      RABBITMQ_DEFAULT_PASS: skitrak   # local only
+    ports: ["5672:5672", "15672:15672"]
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  ingest-server:
+    build: ./ingest-server
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PASS: skitrak
+      CHANNEL_POOL_SIZE: "128"
+    ports: ["8080:8080"]
+    depends_on:
+      rabbitmq: { condition: service_healthy }
+
+  consumer:
+    build: ./consumer
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PASS: skitrak
+      CONSUMER_THREADS: "10"
+      TOP_N: "20"
+    depends_on:
+      rabbitmq: { condition: service_healthy }
+    restart: on-failure

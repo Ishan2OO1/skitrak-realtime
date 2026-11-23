@@ -1,0 +1,18 @@
+[Unit]
+Description=SkiTrak consumer
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+User=ec2-user
+EnvironmentFile=/etc/skitrak/consumer.env
+ExecStart=/usr/bin/java -Xmx512m -jar /opt/skitrak/skitrak-consumer-1.0.jar
+# keeps retrying if the broker isnt up yet, and restarts after a crash
+Restart=always
+RestartSec=5
+# java exits with 143 on SIGTERM, count that as a clean stop
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,19 @@
+[Unit]
+Description=Tomcat 9 (SkiTrak ingest)
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+User=ec2-user
+# wait for the broker first, the webapp fails to deploy if rabbitmq isnt reachable
+ExecStartPre=/bin/bash -c '. /opt/tomcat9/bin/setenv.sh; until timeout 2 bash -c "</dev/tcp/$RABBITMQ_HOST/5672"; do echo "waiting for broker"; sleep 3; done'
+# run (foreground) not startup.sh, so systemd can track the process. logs go to journalctl -u tomcat
+ExecStart=/opt/tomcat9/bin/catalina.sh run
+Restart=on-failure
+RestartSec=5
+SuccessExitStatus=143
+TimeoutStartSec=600
+
+[Install]
+WantedBy=multi-user.target
