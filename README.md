@@ -1,5 +1,7 @@
 # SkiTrak Realtime
 
+![build](https://github.com/Ishan2OO1/skitrak-realtime/actions/workflows/build.yml/badge.svg)
+
 A distributed pipeline that ingests ski-lift swipe events, aggregates them per skier, and pushes **live leaderboards** to WebSocket clients, built on Java, RabbitMQ and AWS, and load-tested to **1,000,000 events with zero loss**.
 
 ![Architecture](docs/architecture.png)
